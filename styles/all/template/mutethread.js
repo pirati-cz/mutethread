@@ -1,0 +1,90 @@
+// @name          PHPBB thread mute
+// @version       0.26
+// @author        Lukas -krtek.net- Novy <zmrd@krtek.net>
+// @description   Delists muted threads for 14 days
+
+$(function () {
+	var muted = $.cookie('mute-threads');
+	if (!muted) {
+		muted = localStorage.getItem('mute-threads');
+		if (!muted) {
+			muted = {};
+		} else {
+			try {
+				muted = JSON.parse(muted);
+			} catch (e) {
+				muted = {};
+			}
+		}
+	} else {
+		localStorage.setItem('mute-threads', muted);
+		$.cookie('mute-threads', 1, {expires: -1, path: '/'});
+		muted = JSON.parse(muted);
+	}
+	var now = Math.floor(new Date().valueOf() / 1000);
+	var n = {};
+	for (var i in muted) {
+		var e = muted[i];
+		if (now - e < 60 * 60 * 24 * 14) {
+			n[i] = e;
+		}
+	}
+	muted = n;
+	var title = $('ul.topiclist li.header dl dt');
+	var button = $('<button>SHOW MUTED</button>');
+	button.click(function() {
+		$('ul.topiclist.topics li').show();
+	});
+	button.css("font-size", "90%");
+	button.css("font-weight", "bold");
+	button.css("border", "1px solid gray");
+	button.css("margin", "0 0 0 10px");
+	button.css("background", "rgb(230,230,230)");
+	button.css("color", "blue");
+	button.css("border-radius", "3px");
+	button.css("padding", "0px 2px");
+	button.css("cursor", "pointer");
+	title.append(button);
+	$('ul.topiclist.topics li dl dt a.topictitle').each(function() {
+		var url = this.href;
+
+		url = url.replace(/\.html$/, '');
+		var topic_id = url.replace(/.+t/g, '');
+		var button;
+		var unmutefun;
+		var mutefun = function() {
+			muted['t-' + topic_id] = now;
+			localStorage.setItem('mute-threads', JSON.stringify(muted));
+			$(this).html('UNMUTE');
+			$(this).unbind('click', mutefun);
+			$(this).click(unmutefun);
+		};
+		unmutefun = function () {
+			delete muted['t-' + topic_id];
+			localStorage.setItem('mute-threads', JSON.stringify(muted));
+			$(this).html('MUTE');
+			$(this).unbind('click', unmutefun);
+			$(this).click(mutefun);
+		};
+
+		if ('t-' + topic_id in muted) {
+ 			button = $("<button>UNMUTE</button>");
+			$(this).parent().parent().parent().parent().hide();
+			button.click(unmutefun);
+		} else {
+ 			button = $("<button>MUTE</button>");
+			button.click(mutefun);
+		}
+		button.css("font-size", "50%");
+		button.css("font-weight", "bold");
+		button.css("border", "1px solid gray");
+		button.css("margin", "1px 10px 0 0");
+		button.css("float", "right");
+		button.css("background", "rgb(230,230,230)");
+		button.css("color", "blue");
+		button.css("border-radius", "3px");
+		button.css("padding", "0px 2px");
+		button.css("cursor", "pointer");
+		$(this).parent().append(button);
+	});
+});

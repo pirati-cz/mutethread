@@ -1,0 +1,28 @@
+{
+	"name": "ppcz/mutethread",
+	"type": "phpbb-extension",
+	"description": "Mute thread for phpBB 3.2",
+	"homepage": "https://github.com/pirati-cz/mutethread",
+	"version": "0.26",
+	"keywords": ["phpbb", "extension", "mute", "thread"],
+	"license": "Public domain",
+	"authors": [
+		{
+			"name": "Lukas -krtek.net- Novy",
+			"email": "zmrd@krtek.net"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"composer/installers": "~1.0"
+	},
+	"require-dev": {
+		"phpbb/epv": "dev-master"
+	},
+	"extra": {
+		"display-name": "Mute Thread Extension",
+		"soft-require": {
+			"phpbb/phpbb": "~3.2"
+		}
+	}
+}
