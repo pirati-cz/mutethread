@@ -4,7 +4,7 @@
 // @description   Delists muted threads for 14 days
 
 $(function () {
-	var muted = $.cookie('mute-threads');
+	var muted = Cookies.get('mute-threads');
 	if (!muted) {
 		muted = localStorage.getItem('mute-threads');
 		if (!muted) {
@@ -18,7 +18,7 @@ $(function () {
 		}
 	} else {
 		localStorage.setItem('mute-threads', muted);
-		$.cookie('mute-threads', 1, {expires: -1, path: '/'});
+		Cookies.set('mute-threads', 1, {expires: -1, path: '/'});
 		muted = JSON.parse(muted);
 	}
 	var now = Math.floor(new Date().valueOf() / 1000);
